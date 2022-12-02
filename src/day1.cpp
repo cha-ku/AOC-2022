@@ -6,7 +6,7 @@
 #include <numeric>
 
 void problem1() {
-    std::ifstream input("input.txt");
+    std::ifstream input("input_day1.txt");
     std::string input_line;
     auto global_max = 0;
     auto curr_sum = 0;
@@ -35,7 +35,7 @@ void problem2() {
             curr_sum = 0;
         }
     }
-    std::partial_sort(group_total.begin(), group_total.begin() + 3, group_total.end(), std::greater());
+    std::partial_sort(group_total.begin(), group_total.begin() + 3, group_total.end(), std::greater<int>());
     std::vector<uint64_t> subvec(group_total.begin(), group_total.begin() + 3);
     std::cout << std::accumulate(subvec.begin(), subvec.end(), 0) << "\n";
 }
