@@ -13,7 +13,7 @@ std::vector<std::string> parse_input(std::string filename) {
     while(std::getline(input, input_line)) {
         vec_input.push_back(input_line);
     }
-    return std::move(vec_input);
+    return vec_input;
 }
 
 enum class choice {

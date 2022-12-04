@@ -23,7 +23,7 @@ void problem1() {
 }
 
 void problem2() {
-    std::ifstream input("input.txt");
+    std::ifstream input("input_day1.txt");
     std::string input_line;
     std::vector<uint64_t> group_total;
     auto curr_sum = 0;
