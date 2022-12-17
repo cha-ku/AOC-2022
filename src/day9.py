@@ -2,16 +2,6 @@
 
 import os
 
-def print_grid(coords):
-    row = [['.'] * 30]
-    grid = []
-    for i in range(30):
-        grid.append(row)
-    middle_point = [10, 10]
-    for c in coords:
-        print(grid[middle_point[0] + c[0]])
-        grid[middle_point[0] + c[0]][middle_point[1] + c[1]] = '#'
-
 def is_touching(head_coord, tail_coord):
     # H - 0,0
     # T - 0,1 | 1,0 | 0,-1 | -1,0 | -1,-1 | -1,1 | 1,1 | 1,-1 | 0,0
