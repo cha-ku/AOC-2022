@@ -2,6 +2,16 @@
 
 import os
 
+def print_grid(coords):
+    row = [['.'] * 30]
+    grid = []
+    for i in range(30):
+        grid.append(row)
+    middle_point = [10, 10]
+    for c in coords:
+        print(grid[middle_point[0] + c[0]])
+        grid[middle_point[0] + c[0]][middle_point[1] + c[1]] = '#'
+
 def is_touching(head_coord, tail_coord):
     # H - 0,0
     # T - 0,1 | 1,0 | 0,-1 | -1,0 | -1,-1 | -1,1 | 1,1 | 1,-1 | 0,0
@@ -12,21 +22,24 @@ def is_touching(head_coord, tail_coord):
     else:
         return False
 
-def move_tail(coords, dirn, tail_pos):
+def move_tail(coords):
     head = coords[0]
     tail = coords[1]
     # H - 0,0
     # T - 0,1 | 1,0 | 0,-1 | -1,0
     # if tail x is equal to head x or tail y equals head y - in the same axis - move in the same direction
-    if tail[0] == head[0] or tail[1] == head[1]:
-        if dirn == 'U':
+    if tail[0] == head[0]:
+        if is_touching(head, [tail[0], tail[1]+1]):
             tail[1] += 1
-        elif dirn == 'D':
+        elif is_touching(head, [tail[0], tail[1]-1]):
             tail[1] -= 1
-        elif dirn == 'L':
-            tail[0] -= 1
-        elif dirn == 'R':
+        else:
+            print("Invalid direction")
+    elif tail[1] == head[1]:
+        if is_touching(head, [tail[0]+1, tail[1]]):
             tail[0] += 1
+        elif is_touching(head, [tail[0]-1, tail[1]]):
+            tail[0] -= 1
         else:
             print("Invalid direction")
     # move diagonally
@@ -45,8 +58,7 @@ def move_tail(coords, dirn, tail_pos):
             tail[1] -= 1
         else:
             print('Cannot determine diagonal movement direction')
-    tail_pos.add(tuple(tail))
-    return [head, tail], tail_pos
+    return [head, tail]
 
 
 def move_and_check(direction, length, coords, tail_pos):
@@ -63,7 +75,8 @@ def move_and_check(direction, length, coords, tail_pos):
             print('invalid direction')
         length -= 1
         if not is_touching(coords[0], coords[1]):
-            coords, tail_pos = move_tail(coords, direction, tail_pos)
+            coords = move_tail(coords)
+        tail_pos.add(tuple(coords[1]))
     #print(f'H - {coords[0]} T - {coords[1]}')
     return coords, tail_pos
 
@@ -79,13 +92,13 @@ def move_and_check_10(direction, length, coords, tail_pos):
             coords[0][0] += 1
         else:
             print('invalid direction')
-        length -= 1
         for i in range(0, len(coords)-1):
-            if not is_touching(coords[0], coords[1]):
-                coords, tail_pos = move_tail(coords, direction, tail_pos)
-    #print(f'H - {coords[0]} T - {coords[1]}')
+            if not is_touching(coords[i], coords[i+1]):
+                x = [coords[i], coords[i+1]]
+                coords[i], coords[i+1] = move_tail(x)
+            tail_pos.add(tuple(coords[-1]))
+        length -= 1
     return coords, tail_pos
-
 
 def problem1(input_lines):
     start_coords = [[0,0],[0,0]]
@@ -99,12 +112,15 @@ def problem1(input_lines):
     print(len(tail_pos))
 
 def problem2(input_lines):
-    start_coords = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+    knots_coords = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
     tail_pos = set([])
-    tail_pos.add(tuple(start_coords[1]))
+    tail_pos.add(tuple(knots_coords[-1]))
     for line in input_lines:
         direction = line.split(' ')[0]
         length = int(line.split(' ')[1])
+        knots_coords, tail_pos = move_and_check_10(direction, length, knots_coords, tail_pos)
+    #print(tail_pos)
+    print(len(tail_pos))
 
 
 if __name__ == '__main__':
