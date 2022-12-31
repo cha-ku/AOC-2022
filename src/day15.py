@@ -8,31 +8,35 @@ from collections import namedtuple
 
 
 def problem1(input_lines, y_):
-    Beacon = namedtuple("Beacon", "x y")
-    Sensor = namedtuple("Sensor", "x y")
+    Point = namedtuple("Point", "x y")
     pattern = re.compile(
         'Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)')
     sensors = []
     beacons = set()
-    min_x = inf
-    max_x = -inf
-    ranges = set()
+    intervals = []
     for line in input_lines:
         m = pattern.match(line)
-        sensor = Sensor(int(m.group(1)), int(m.group(2)))
-        beacon = Beacon(int(m.group(3)), int(m.group(4)))
+        sensor = Point(int(m.group(1)), int(m.group(2)))
+        beacon = Point(int(m.group(3)), int(m.group(4)))
         beacons.add((beacon.x, beacon.y))
         manhattan = abs(sensor.x - beacon.x) + abs(sensor.y - beacon.y)
-        min_x = min(sensor.x - manhattan, min_x)
-        max_x = max(sensor.x + manhattan, max_x)
         sensors.append((sensor, manhattan))
-    print(min_x, max_x)
-    covered = set()
-    for x_ in range(min_x, max_x + 1):
-        for (s, m) in sensors:
-            if m >= (abs(s.x - x_) + abs(s.y - y_)) and (x_, y_) not in beacons:
-                covered.add((x_, y_))
-    print(len(covered))
+        # if y_ is within manhattan distance of sensor.y
+        if abs(sensor.y - y_) <= manhattan:
+            vertical_dist_to_target_row = abs(sensor.y - y_)
+            half_interval = manhattan - vertical_dist_to_target_row
+            start_x, end_x = min(sensor.x - half_interval, sensor.x + half_interval),\
+                max(sensor.x - half_interval, sensor.x + half_interval)
+            intervals.append([start_x, end_x])
+    intervals.sort()
+    collapsed = []
+    collapsed.append(intervals[0])
+    for interval in intervals[1:]:
+        if collapsed[-1][0] <= interval[0] <= collapsed[-1][1]:
+            collapsed[-1][1] = max(collapsed[-1][1], interval[1])
+        else:
+            collapsed.append(interval)
+    print(collapsed[-1][-1] - collapsed[0][0])
 
 
 def problem2(input_lines):
