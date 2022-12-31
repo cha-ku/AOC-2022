@@ -2,6 +2,7 @@
 
 import os
 
+
 def is_touching(head_coord, tail_coord):
     # H - 0,0
     # T - 0,1 | 1,0 | 0,-1 | -1,0 | -1,-1 | -1,1 | 1,1 | 1,-1 | 0,0
@@ -11,6 +12,7 @@ def is_touching(head_coord, tail_coord):
         return True
     else:
         return False
+
 
 def move_tail(coords):
     head = coords[0]
@@ -47,7 +49,7 @@ def move_tail(coords):
             tail[0] -= 1
             tail[1] -= 1
         else:
-            print('Cannot determine diagonal movement direction')
+            print('Cannot detexmine diagonal movement direction')
     return [head, tail]
 
 
@@ -70,6 +72,7 @@ def move_and_check(direction, length, coords, tail_pos):
     #print(f'H - {coords[0]} T - {coords[1]}')
     return coords, tail_pos
 
+
 def move_and_check_10(direction, length, coords, tail_pos):
     while length:
         if direction == 'U':
@@ -90,34 +93,40 @@ def move_and_check_10(direction, length, coords, tail_pos):
         length -= 1
     return coords, tail_pos
 
+
 def problem1(input_lines):
-    start_coords = [[0,0],[0,0]]
+    start_coords = [[0, 0], [0, 0]]
     tail_pos = set([])
     tail_pos.add(tuple(start_coords[1]))
     for line in input_lines:
         direction = line.split(' ')[0]
         length = int(line.split(' ')[1])
-        start_coords, tail_pos = move_and_check(direction, length, start_coords, tail_pos)
-    #print(tail_pos)
+        start_coords, tail_pos = move_and_check(
+            direction, length, start_coords, tail_pos)
+    # print(tail_pos)
     print(len(tail_pos))
 
+
 def problem2(input_lines):
-    knots_coords = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+    knots_coords = [[0, 0], [0, 0], [0, 0], [0, 0], [
+        0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
     tail_pos = set([])
     tail_pos.add(tuple(knots_coords[-1]))
     for line in input_lines:
         direction = line.split(' ')[0]
         length = int(line.split(' ')[1])
-        knots_coords, tail_pos = move_and_check_10(direction, length, knots_coords, tail_pos)
-    #print(tail_pos)
+        knots_coords, tail_pos = move_and_check_10(
+            direction, length, knots_coords, tail_pos)
+    # print(tail_pos)
     print(len(tail_pos))
 
 
 if __name__ == '__main__':
     test_input = 'test_input.txt'
-    aoc_input = 'input_' + os.path.splitext(os.path.basename(__file__))[0] + '.txt'
+    aoc_input = 'input_' + \
+        os.path.splitext(os.path.basename(__file__))[0] + '.txt'
     with open(aoc_input) as ipfile:
-    #with open(test_input) as ipfile:
+        # with open(test_input) as ipfile:
         input_lines = [line.strip('\n') for line in ipfile.readlines()]
     problem1(input_lines)
     problem2(input_lines)
