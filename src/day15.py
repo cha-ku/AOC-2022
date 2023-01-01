@@ -40,7 +40,35 @@ def problem1(input_lines, y_):
 
 
 def problem2(input_lines):
-    pass
+    Point = namedtuple("Point", "x y")
+    pattern = re.compile(
+        'Sensor at x=(-?\d+), y=(-?\d+): closest beacon is at x=(-?\d+), y=(-?\d+)')
+    sensors = []
+    beacons = set()
+    for line in input_lines:
+        m = pattern.match(line)
+        sensor = Point(int(m.group(1)), int(m.group(2)))
+        beacon = Point(int(m.group(3)), int(m.group(4)))
+        beacons.add((beacon.x, beacon.y))
+        manhattan = abs(sensor.x - beacon.x) + abs(sensor.y - beacon.y)
+        sensors.append((sensor, manhattan))
+    positive_lines = []
+    negative_lines = []
+    for sensor, manh in sensors:
+        positive_lines.extend(
+            [sensor.x - sensor.y - manh, sensor.x - sensor.y + manh])
+        negative_lines.extend(
+            [sensor.x + sensor.y - manh, sensor.x + sensor.y + manh])
+    assert (len(positive_lines) == len(negative_lines) == 2*len(sensors))
+    pos, neg = None, None
+    for i in range(2 * len(sensors)):
+        for j in range(i+1, 2*len(sensors)):
+            if abs(positive_lines[i] - positive_lines[j]) == 2:
+                pos = min(positive_lines[i], positive_lines[j]) + 1
+            if abs(negative_lines[i] - negative_lines[j]) == 2:
+                neg = min(negative_lines[i], negative_lines[j]) + 1
+    x, y = (pos + neg) // 2, (neg - pos) // 2
+    print(x * 4000000 + y)
 
 
 if __name__ == '__main__':
